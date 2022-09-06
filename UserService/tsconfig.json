@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+      "declaration": true,
+      "emitDeclarationOnly": false,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "module": "Node16",
+      "esModuleInterop": true,
+      "isolatedModules": true,
+      "forceConsistentCasingInFileNames": true,
+      "lib": [
+          "es2017",
+          "es2015",
+          "dom",
+          "es2018.promise",
+          "es2019",
+          "es2020"
+      ],
+      "target": "es2019",
+      "noImplicitAny": true,
+      "resolveJsonModule": true,
+      "moduleResolution": "node",
+      "outDir": "dist",
+      "baseUrl": ".",
+      "skipLibCheck": true,
+      "strict": true,
+      "strictFunctionTypes": false,
+      "strictNullChecks": false,
+      "paths": {
+      },
+      "typeRoots": [
+          "./typings",
+          "./node_modules/@types"
+      ]
+  },
+  "exclude": [
+      "node_modules"
+  ]
+}
