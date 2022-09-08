@@ -63,3 +63,29 @@ export const updateUser = async (id: string, user: User) => {
 
     return userPayload;
 };
+
+export const createUser = async (user: User) => {
+    AWS.config.update({
+        region: "local",
+    });
+
+    let userPayload = {};
+    const newId = Math.random();
+    const docClient = new AWS.DynamoDB.DocumentClient({region: "local", endpoint: "http://localhost:8000"})
+    const table = "Users";
+    const params = {
+        TableName: table,
+        Item: {
+            "id": newId,
+            "type": user.type,
+            "name": user.name,
+        }
+    };
+    try {
+        userPayload = (await docClient.put(params).promise())
+    } catch (err) {
+        console.error(JSON.stringify(err));
+    };
+
+    return userPayload;
+};

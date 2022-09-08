@@ -1,5 +1,5 @@
 import { Request, RequestHandler, Response } from 'express';
-import { readUser, updateUser } from '../../services/user';
+import { createUser, readUser, updateUser } from '../../services/user';
 
 export const readOneUser = (): RequestHandler => async (req: Request, res: Response) => {
     const {
@@ -16,7 +16,7 @@ export const readOneUser = (): RequestHandler => async (req: Request, res: Respo
         console.error(err);
         res.json({ status: "Error", description: "There was an error during readUser" });
     }
-}
+};
 
 export const updateOneUser = (): RequestHandler => async (req: Request, res: Response) => {
     const id = req.params.id;
@@ -32,4 +32,15 @@ export const updateOneUser = (): RequestHandler => async (req: Request, res: Res
         console.error(err);
         res.json({ status: "Error", description: "There was an error during readUser" });
     }
-}
+};
+
+export const createOneUser = (): RequestHandler => async (req: Request, res: Response) => {
+    const user = req?.body?.user;
+    try {
+        const userPayload = await createUser(user);
+        res.json({ status: 'Success', results:  userPayload});
+    } catch (err) {
+        console.error(err);
+        res.json({ status: "Error", description: "There was an error during readUser" });
+    }
+};
