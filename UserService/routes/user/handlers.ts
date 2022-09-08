@@ -1,5 +1,5 @@
 import { Request, RequestHandler, Response } from 'express';
-import { readUser } from '../../services/user';
+import { readUser, updateUser } from '../../services/user';
 
 export const readOneUser = (): RequestHandler => async (req: Request, res: Response) => {
     const {
@@ -7,6 +7,22 @@ export const readOneUser = (): RequestHandler => async (req: Request, res: Respo
       } = req;
     try {
         const userPayload = await readUser(id);
+        if (userPayload) {
+            res.json({ status: 'Success', results:  userPayload});
+        } else {
+            res.json({ status: 'Success', description: `No record for given id of ${id}` });
+        }
+    } catch (err) {
+        console.error(err);
+        res.json({ status: "Error", description: "There was an error during readUser" });
+    }
+}
+
+export const updateOneUser = (): RequestHandler => async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const user = req?.body?.user;
+    try {
+        const userPayload = await updateUser(id, user);
         if (userPayload) {
             res.json({ status: 'Success', results:  userPayload});
         } else {
