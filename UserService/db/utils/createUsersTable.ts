@@ -19,7 +19,7 @@ var params = {
         WriteCapacityUnits: 5
     }
 };
-dynamodb.createTable(params, function(err: any, data: any) {
+dynamodb.createTable(params, function(err, data) {
     if (err) {
         console.error("Error JSON.", JSON.stringify(err, null, 2));
     } else {
