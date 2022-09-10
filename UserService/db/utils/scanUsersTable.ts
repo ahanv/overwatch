@@ -31,7 +31,7 @@
         data.Items.forEach(function (element, index, array) {
           console.log(
               "printing",
-              "Name: " + JSON.stringify(element.name) + " | Type: " + JSON.stringify(element.type) + " | Id: " + JSON.stringify(element.id) + ""
+              "Name: " + JSON.stringify(element.name.S) + " | Type: " + JSON.stringify(element.type.S) + " | Id: " + JSON.stringify(element.id.N) + ""
           );
         });
       }

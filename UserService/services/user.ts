@@ -89,3 +89,29 @@ export const createUser = async (user: User) => {
 
     return userPayload;
 };
+
+export const readManyUsers = async () => {
+    AWS.config.update({
+        region: "local",
+    });
+
+    let returnPayload: {}[] = [];
+    const ddb = new AWS.DynamoDB.DocumentClient({ apiVersion: "2012-08-10", endpoint: "http://localhost:8000" });
+    const params = {
+      TableName: "Users",
+    };
+    try {
+        const userPayload = (await ddb.scan(params).promise())
+        userPayload.Items.forEach(async (element) => {
+            const result = AWS.DynamoDB.Converter.unmarshall(element);
+            for (const k in result) {
+                result[k] = element[k]
+            }
+            returnPayload.push(result);
+        });
+    } catch (err) {
+        console.error(JSON.stringify(err));
+    };
+
+    return returnPayload;
+};
