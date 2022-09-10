@@ -115,3 +115,26 @@ export const readManyUsers = async () => {
 
     return returnPayload;
 };
+
+export const deleteUser = async (id: string) => {
+    AWS.config.update({
+        region: "local",
+    });
+
+    let userPayload = {};
+    const docClient = new AWS.DynamoDB.DocumentClient({region: "local", endpoint: "http://localhost:8000"})
+    const table = "Users";
+    const params = {
+        TableName: table,
+        Key:{
+            "id": Number(id)
+        }
+    };
+    try {
+        userPayload = (await docClient.delete(params).promise())
+    } catch (err) {
+        console.error(JSON.stringify(err));
+    };
+
+    return userPayload;
+};
