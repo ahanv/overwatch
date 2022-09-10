@@ -1,5 +1,5 @@
 import { Request, RequestHandler, Response } from 'express';
-import { createUser, readUser, updateUser } from '../../services/user';
+import { createUser, readManyUsers, readUser, updateUser } from '../../services/user';
 
 export const readOneUser = (): RequestHandler => async (req: Request, res: Response) => {
     const {
@@ -42,5 +42,19 @@ export const createOneUser = (): RequestHandler => async (req: Request, res: Res
     } catch (err) {
         console.error(err);
         res.json({ status: "Error", description: "There was an error during readUser" });
+    }
+};
+
+export const readAllUsers = (): RequestHandler => async (req: Request, res: Response) => {
+    try {
+        const userPayload = await readManyUsers();
+        if (userPayload) {
+            res.json({ status: 'Success', results:  userPayload});
+        } else {
+            res.json({ status: 'Success', description: `No record found in Users table` });
+        }
+    } catch (err) {
+        console.error(err);
+        res.json({ status: "Error", description: "There was an error during readAllUsers" });
     }
 };
