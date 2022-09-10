@@ -70,7 +70,7 @@ export const createUser = async (user: User) => {
     });
 
     let userPayload = {};
-    const newId = Math.random();
+    const newId = Math.floor(Math.random() * 100000);
     const docClient = new AWS.DynamoDB.DocumentClient({region: "local", endpoint: "http://localhost:8000"})
     const table = "Users";
     const params = {
