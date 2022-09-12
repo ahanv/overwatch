@@ -1,5 +1,6 @@
 import AWS from 'aws-sdk';
 import { int } from 'aws-sdk/clients/datapipeline';
+import { docClient } from '../db/utils/config/docClient';
 
 export class User {
     id?: int;
@@ -17,7 +18,6 @@ export const readUser = async (id: string) => {
 };
 
 export const getRecord = async (id: string) => {
-    const docClient = new AWS.DynamoDB.DocumentClient({region: "local", endpoint: "http://localhost:8000"})
     const table = "Users";
     const params = {
         TableName: table,
@@ -38,7 +38,6 @@ export const updateUser = async (id: string, user: User) => {
     });
 
     let userPayload = {};
-    const docClient = new AWS.DynamoDB.DocumentClient({region: "local", endpoint: "http://localhost:8000"})
     const table = "Users";
     const params = {
         TableName: table,
@@ -71,7 +70,6 @@ export const createUser = async (user: User) => {
 
     let userPayload = {};
     const newId = Math.floor(Math.random() * 100000);
-    const docClient = new AWS.DynamoDB.DocumentClient({region: "local", endpoint: "http://localhost:8000"})
     const table = "Users";
     const params = {
         TableName: table,
@@ -96,13 +94,12 @@ export const readManyUsers = async () => {
     });
 
     let returnPayload: {}[] = [];
-    const ddb = new AWS.DynamoDB.DocumentClient({ apiVersion: "2012-08-10", endpoint: "http://localhost:8000" });
     const params = {
       TableName: "Users",
     };
     try {
-        const userPayload = (await ddb.scan(params).promise())
-        userPayload.Items.forEach(async (element) => {
+        const userPayload = (await docClient.scan(params).promise())
+        userPayload.Items.forEach(async (element: { [x: string]: any; }) => {
             const result = AWS.DynamoDB.Converter.unmarshall(element);
             for (const k in result) {
                 result[k] = element[k]
@@ -122,7 +119,6 @@ export const deleteUser = async (id: string) => {
     });
 
     let userPayload = {};
-    const docClient = new AWS.DynamoDB.DocumentClient({region: "local", endpoint: "http://localhost:8000"})
     const table = "Users";
     const params = {
         TableName: table,
