@@ -1,6 +1,6 @@
 import AWS from 'aws-sdk';
 import { int } from 'aws-sdk/clients/datapipeline';
-import { docClient } from '../db/utils/config/docClient';
+import { docClient } from '../db/config/docClient';
 
 export class User {
     id?: int;
