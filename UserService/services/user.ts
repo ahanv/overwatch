@@ -4,7 +4,10 @@ import { docClient } from '../db/config/docClient';
 
 export class User {
     id?: int;
-    name: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
     type: string;
 }
 
@@ -44,14 +47,20 @@ export const updateUser = async (id: string, user: User) => {
         Key:{
             "id": Number(id)
         },
-        UpdateExpression: 'set #a = :a, #b = :b',
+        UpdateExpression: 'set #a = :a, #b = :b, #c = :c, #d = :d, #e = :e',
         ExpressionAttributeNames: {
-            '#a' : 'name',
-            '#b' : 'type'
+            '#a' : 'firstName',
+            '#b' : 'lastName',
+            '#c' : 'email',
+            '#d' : 'password',
+            '#e' : 'type'
         },
         ExpressionAttributeValues: {
-            ':a' : `${user.name}`,
-            ':b' : `${user.type}`
+            ':a' : `${user.firstName}`,
+            ':b' : `${user.lastName}`,
+            ':c' : `${user.email}`,
+            ':d' : `${user.password}`,
+            ':e' : `${user.type}`
         }
     };
     try {
@@ -76,7 +85,10 @@ export const createUser = async (user: User) => {
         Item: {
             "id": newId,
             "type": user.type,
-            "name": user.name,
+            "firstName": user.firstName,
+            "lastName": user.lastName,
+            "email": user.email,
+            "password": user.password
         }
     };
     try {
