@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using OrganizationService.Entities;
+using OrganizationService.Respositories;
 
 namespace OrganizationService.Controllers;
 
@@ -7,48 +9,83 @@ namespace OrganizationService.Controllers;
 public class OrganizationsController : ControllerBase
 {
     private readonly ILogger<OrganizationsController> _logger;
+    private readonly IOrganizationsRepository repository;
 
-    public OrganizationsController(ILogger<OrganizationsController> logger)
+    public OrganizationsController(ILogger<OrganizationsController> logger, IOrganizationsRepository repository)
     {
         _logger = logger;
+        this.repository = repository;
     }
 
     // GET: /organizations
     [HttpGet]
-    public String GetOrganizations()
+    public IEnumerable<Organization> GetOrganizations()
     {
-        return "Returns list of organizations.";
+        return repository.GetOrganizations();
     }
 
     // GET: /organizations/{id}
     [HttpGet("{id}")]
-    public String GetOrganization(Guid id)
+    public ActionResult<Organization> GetOrganization(Guid id)
     {
         _logger.LogInformation($"Getting record for id: {id}");
-        return "Receives organization Id and returns record.";
+        
+        Organization organization = repository.GetOrganization(id);
+
+        if (organization is null)
+        {
+            return NotFound();
+        }
+
+        return organization;
     }
 
     // POST: /organizations
     [HttpPost]
-    public String AddOrganization(Object organization)
+    public ActionResult<Organization> AddOrganization(Organization organization)
     {
         _logger.LogInformation($"Adding new organization: {organization}");
-        return "Receives and organization object and creates record.";
+        Organization newOrganization = new Organization { Id = Guid.NewGuid(), Name = organization.Name, CloudServiceProvider = organization.CloudServiceProvider, Owner = organization.Owner, DateCreated = DateTimeOffset.Now };
+        repository.AddOrganization(newOrganization);
+        return CreatedAtAction(nameof(GetOrganization), new { id = newOrganization.Id }, newOrganization);
     }
 
     // PUT: /organizations/{id}
     [HttpPut("{id}")]
-    public String UpdateOrganization(Guid id, Object organization)
+    public ActionResult UpdateOrganization(Guid id, Organization organization)
     {
         _logger.LogInformation($"Updating organization for id: {id}");
-        return "Receives id and object and updates organization record.";
+        Organization existingOrganization = repository.GetOrganization(id);
+
+        if (existingOrganization is null)
+        {
+            return NotFound();
+        }
+
+        foreach(var prop in typeof(Organization).GetProperties())
+        {
+            prop.SetValue(existingOrganization, prop.GetValue(organization, null), null);
+        }
+        
+        repository.UpdateOrganization(existingOrganization);
+
+        return StatusCode(200);
     }
 
     // DELETE: /organizations/{id}
     [HttpDelete("{id}")]
-    public String DeleteOrganization(Guid id)
+    public ActionResult<Organization> DeleteOrganization(Guid id)
     {
         _logger.LogInformation($"Deleting organization for id: {id}");
-        return "Receives id and deletes organization record.";
+
+        Organization existingOrganization = repository.GetOrganization(id);
+
+        if (existingOrganization is null)
+        {
+            return NotFound();
+        }
+
+        repository.RemoveOrganization(existingOrganization.Id);
+        return StatusCode(200);
     }
 }
