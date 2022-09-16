@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using OrganizationService.Dtos;
 using OrganizationService.Entities;
 using OrganizationService.Respositories;
 
@@ -42,10 +43,10 @@ public class OrganizationsController : ControllerBase
 
     // POST: /organizations
     [HttpPost]
-    public ActionResult<Organization> AddOrganization(Organization organization)
+    public ActionResult<Organization> AddOrganization(AddOrganizationDto organizationDto)
     {
-        _logger.LogInformation($"Adding new organization: {organization}");
-        Organization newOrganization = new Organization { Id = Guid.NewGuid(), Name = organization.Name, CloudServiceProvider = organization.CloudServiceProvider, Owner = organization.Owner, DateCreated = DateTimeOffset.Now };
+        _logger.LogInformation($"Adding new organization: {organizationDto}");
+        Organization newOrganization = new Organization { Id = Guid.NewGuid(), Name = organizationDto.Name, CloudServiceProvider = organizationDto.CloudServiceProvider, Owner = organizationDto.Owner, DateCreated = DateTimeOffset.Now };
         repository.AddOrganization(newOrganization);
         return CreatedAtAction(nameof(GetOrganization), new { id = newOrganization.Id }, newOrganization);
     }
